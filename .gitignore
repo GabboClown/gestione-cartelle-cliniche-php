@@ -7,8 +7,8 @@
 /public/static/
 /storage/*.key
 /vendor
-.env
-.env.backup
+env.php
+env.backup.php
 /.phpunit.cache
 .antlers.json
 Homestead.json

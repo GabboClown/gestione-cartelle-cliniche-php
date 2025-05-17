@@ -1,0 +1,5 @@
+PAZIENTI(ID PK, Cod_fiscale PK, Nome, Cognome, Data_Nascita, Sesso)
+OSPEDALI(ID PK, Nome, Indirizzo)
+DIAGNOSI(ID PK, Data_Diagnosi, ID_Paziente FK, ID_Ospedale FK)
+QUESITI_DIAGNOSTICI(ID_Quesito PK, Descrizione)
+DIAGNOSI_QUESITI(ID_Diagnosi PK Fk, ID_Quesito PK FK)
