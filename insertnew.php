@@ -76,7 +76,7 @@
           <a href="#" class="nav-link">
             <i class="nav-icon fa fa-users"></i>
               <p>
-              Cittadini
+              Pazienti
               <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -99,7 +99,7 @@
           <a href="#" class="nav-link">
             <i class="nav-icon fa fa-lock"></i>
               <p>
-              Autorizzati
+              Amministratori
               <i class="fas fa-angle-left right"></i>
               </p>
             </a>

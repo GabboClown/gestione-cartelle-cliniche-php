@@ -91,7 +91,7 @@
           <a href="#" class="nav-link">
             <i class="nav-icon fa fa-users"></i>
               <p>
-              Cittadini
+              Pazienti
               <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -114,7 +114,7 @@
           <a href="#" class="nav-link">
             <i class="nav-icon fa fa-lock"></i>
               <p>
-              Autorizzati
+              Amministratori
               <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -269,36 +269,54 @@
             <div class="col-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">DataTable with default features</h3>
+                <h3 class="card-title">Tabella contenente informazioni anagrafiche dei pazienti registrati nel seguente <b>gestionale</b></h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table class="table table-bordered table-striped datatable">
                   <thead>
                     <tr>
-                      <th>Rendering engine</th>
-                      <th>Browser</th>
-                      <th>Platform(s)</th>
-                      <th>Engine version</th>
-                      <th>CSS grade</th>
+                      <th>ID</th>
+                      <th>Codice Fiscale</th>
+                      <th>Nome</th>
+                      <th>Cognome</th>
+                      <th>Data di Nascita</th>
+                      <th>Sesso</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <th>test1</th>
-                      <th>test2</th>
-                      <th>test3</th>
-                      <th>test4</th>
-                      <th>test5</th>
-                    </tr>
+                  <?php
+                    $result = $conn->query("SELECT * FROM Pazienti");
+
+                    if ($result) {
+                      while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+                        $gender = match(strtolower($row['Sesso'])){
+                          'm' => "Maschio",
+                          'f' => "Femmina",
+                          default => "N/n"
+                        };
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['ID']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['Cod_fiscale']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['Nome']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['Cognome']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['Data_Nascita']) . "</td>";
+                        echo "<td>" . htmlspecialchars($gender) . "</td>";
+                        echo "</tr>";
+                      }
+                    } else {
+                      echo "<tr><td colspan='6'>Nessun dato trovato</td></tr>";
+                    }
+                  ?>
                   </tbody>
                   <tfoot>
                     <tr>
-                      <th>Rendering engine</th>
-                      <th>Browser</th>
-                      <th>Platform(s)</th>
-                      <th>Engine version</th>
-                      <th>CSS grade</th>
+                      <th>ID</th>
+                      <th>Codice Fiscale</th>
+                      <th>Nome</th>
+                      <th>Cognome</th>
+                      <th>Data di Nascita</th>
+                      <th>Sesso</th>
                     </tr>
                   </tfoot>
                 </table>
@@ -319,36 +337,39 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                  <table class="table table-bordered table-hover">
-                    <thead>
+                <table class="table table-bordered table-striped datatable">
+                  <thead>
                     <tr>
                       <th>ID</th>
-                      <th>Username</th>
-                      <th>Password</th>
+                      <th>Nome</th>
+                      <th>Cognome</th>
                     </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                        $DB = new mysqli("localhost", "gabbo", "");
-                        $risultato = $DB->query("SELECT * FROM anagrafe.autorizzati LIMIT 10")->fetch_all(MYSQLI_NUM);
-                        foreach($risultato as $row){
-                            echo "<tr>";
-                            foreach($row as $column){
-                                echo "<th>$column</th>";
-                            }
-                            echo "</tr>";
-                        }
-                        $DB->close();
-                      ?>
-                    </tbody>
-                    <tfoot>
+                  </thead>
+                  <tbody>
+                  <?php
+                    $result = $conn->query("SELECT * FROM Amministratori");
+
+                    if ($result) {
+                      while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['ID']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['Nome']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['Cognome']) . "</td>";
+                        echo "</tr>";
+                      }
+                    } else {
+                      echo "<tr><td colspan='6'>Nessun dato trovato</td></tr>";
+                    }
+                  ?>
+                  </tbody>
+                  <tfoot>
                     <tr>
                       <th>ID</th>
-                      <th>Username</th>
-                      <th>Password</th>
+                      <th>Nome</th>
+                      <th>Cognome</th>
                     </tr>
-                    </tfoot>
-                  </table>
+                  </tfoot>
+                </table>
                 </div>
                 <!-- /.card-body -->
               </div>
@@ -410,21 +431,22 @@
 <script src="dipendenze/dist/js/demo.js"></script>
 <!-- Page specific script -->
 <script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
+$(function () {
+  $('.datatable').each(function() {
+    var table = $(this).DataTable({
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false,
+      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
     });
+
+    // Posiziona i bottoni nel contenitore più vicino alla tabella
+    table.buttons().container().appendTo(
+      $(this).closest('.card-body').find('.col-md-6:eq(0)')
+    );
   });
+});
+
 </script>
 <?php $conn->close() ?>
 </body>
