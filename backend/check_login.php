@@ -25,10 +25,9 @@
             $_SESSION['isLoggedIn'] = true;
             $_SESSION['ID'] = $ID;
             header("Location: ../dashboard.php");
-            exit();
         } else {
             header("Location: ../login.html?error=1");
-            exit();
         }
+        $conn->close();
     }
 

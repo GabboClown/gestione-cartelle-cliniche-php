@@ -1,6 +1,6 @@
 <?php
+  include_once "backend/database/connection.php";
   session_start();
-
   if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
       header("Location: login.html");
       exit;
@@ -70,7 +70,7 @@
     <!-- Brand Logo -->
     <a href="dashboard.php" class="brand-link">
       <img src="dipendenze/dist/img/Caduceus.svg" alt="Logo Gestione Cartelle Cliniche" class="brand-image img-circle">
-      <span class="brand-text font-weight-light">Comune di <b>Napoli</b></span>
+      <span class="brand-text font-weight-light"><b>Gestionale</b></span>
     </a>
 
     <!-- Sidebar -->
@@ -147,7 +147,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Bentornato/a <b><?php echo $_COOKIE["username"]?></b>!</h1>
+            <h1 class="m-0">Bentornato/a <b><?php 
+              $stmt = $conn->prepare("SELECT Nome FROM Amministratori WHERE ID = :id");
+              $stmt->bindValue(':id', $_SESSION['ID'], SQLITE3_INTEGER);
+              $result = $stmt->execute();
+              $row = $result->fetchArray(SQLITE3_ASSOC);
+              echo $row['Nome'] ?? "";
+            ?></b>!</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -260,7 +266,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Database contenente informazioni anagrafiche di alcuni cittadini residenti nel Comune di <b>Napoli</b></h3>
+                  <h3 class="card-title">Tabella contenente informazioni anagrafiche di alcuni pazienti registrati nel seguente<b>gestionale</b></h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -317,7 +323,7 @@
             <div class="col-12">
               <div class="card">
                 <div class="card-header">
-                  <h3 class="card-title">Database contenente informazioni sugli amministratori del gestionale del Comune di <b>Napoli</b></h3>
+                  <h3 class="card-title">Tabella contenente informazioni sugli amministratori del seguente <b>gestionale</b></h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -443,5 +449,6 @@
     });
   });
 </script>
+<?php $conn->close() ?>
 </body>
 </html>

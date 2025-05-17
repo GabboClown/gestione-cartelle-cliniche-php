@@ -1,4 +1,5 @@
 <?php
+  include_once "backend/database/connection.php";
   session_start();
 
   if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
@@ -55,7 +56,7 @@
     <!-- Brand Logo -->
     <a href="dashboard.php" class="brand-link">
       <img src="dipendenze/dist/img/Caduceus.svg" alt="Logo Gestione Cartelle Cliniche" class="brand-image img-circle">
-      <span class="brand-text font-weight-light">Comune di <b>Napoli</b></span>
+      <span class="brand-text font-weight-light"><b>Gestionale</b></span>
     </a>
 
     <!-- Sidebar -->
@@ -309,5 +310,6 @@ $(function () {
   bsCustomFileInput.init();
 });
 </script>
+<?php $conn->close() ?>
 </body>
 </html>
