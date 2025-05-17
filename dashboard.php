@@ -177,13 +177,13 @@
               <div class="inner">
                 <h3>
                   <?php 
-                    $DB = new mysqli("localhost", "gabbo", "");
-                      echo $DB->query("SELECT * FROM anagrafe.cittadini")->num_rows;
-                    $DB->close();
+                    // Esegue la query e ritorna la prima riga del risultato
+                    $numPazienti = $conn->querySingle("SELECT COUNT(*) AS Numero FROM Pazienti", true);
+                    echo $numPazienti["Numero"] ?? 0;
                   ?>
                 </h3>
 
-                <p>Cittadini registrati</p>
+                <p>Pazienti registrati</p>
               </div>
               <div class="icon">
                 <i class="fa fa-users"></i>
@@ -198,14 +198,16 @@
               <div class="inner">
               <h3>
                   <?php 
-                    $DB = new mysqli("localhost", "gabbo", "");
-                      echo round(($DB->query("SELECT * FROM anagrafe.cittadini WHERE YEAR(data_di_nascita) <= YEAR(CURDATE()) - 18;")->num_rows * 100) / $DB->query("SELECT * FROM anagrafe.cittadini")->num_rows, 2); 
-                    $DB->close();
-                  ?>
+                    $numMaggiorenni = $conn->querySingle("SELECT COUNT(*) AS Numero FROM Pazienti WHERE Data_Nascita <= date('now', '-18 years')", true);
+                    if($numMaggiorenni != 0 && $numPazienti != 0){
+                      echo round(($numMaggiorenni["Numero"] / $numPazienti["Numero"]) * 100, 2);
+                    } else {
+                      echo 0;
+                    }
+                    ?>
                   <sup style="font-size: 20px">%</sup>
-              </h3>
-
-                <p>Cittadini maggiorenni</p>
+                </h3>
+                <p>Pazienti maggiorenni</p>
               </div>
               <div class="icon">
                 <i class="fa fa-birthday-cake"></i>
@@ -218,16 +220,18 @@
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
-              <h3>
-              <?php 
-                    $DB = new mysqli("localhost", "gabbo", "");
-                      echo round(($DB->query("SELECT * FROM anagrafe.cittadini WHERE YEAR(data_di_nascita) <= YEAR(CURDATE()) - 60;")->num_rows * 100) / $DB->query("SELECT * FROM anagrafe.cittadini")->num_rows, 2); 
-                    $DB->close();
+                <h3>
+                  <?php 
+                    $numOver65 = $conn->querySingle("SELECT COUNT(*) AS Numero FROM Pazienti WHERE Data_Nascita <= date('now', '-65 years')", true);
+                    if($numOver65["Numero"] != 0 && $numPazienti["Numero"] != 0) {
+                      echo round(($numOver65["Numero"] / $numPazienti["Numero"]) * 100, 2);
+                    } else {
+                      echo 0;
+                    }
                   ?>
                   <sup style="font-size: 20px">%</sup>
               </h3>
-
-                <p>Cittadini over 60</p>
+                <p>Pazienti over 65</p>
               </div>
               <div class="icon">
                 <i class="fa fa-blind"></i>
@@ -242,9 +246,8 @@
               <div class="inner">
               <h3>
                   <?php 
-                    $DB = new mysqli("localhost", "gabbo", "");
-                      echo $DB->query("SELECT * FROM anagrafe.autorizzati")->num_rows;
-                    $DB->close();
+                    $numAdmin = $conn->querySingle("SELECT COUNT(*) AS Numero FROM Amministratori", true);
+                    echo $numAdmin["Numero"] ?? 0;
                   ?>
                 </h3>
 
@@ -264,55 +267,44 @@
           <!-- Left col -->
           <section class="col-lg-6">
             <div class="col-12">
-              <div class="card">
-                <div class="card-header">
-                  <h3 class="card-title">Tabella contenente informazioni anagrafiche di alcuni pazienti registrati nel seguente <b>gestionale</b></h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                  <table id="example1" class="table table-bordered table-hover">
-                    <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Nome</th>
-                      <th>Cognome</th>
-                      <th>Codice Fiscale</th>
-                      <th>Data di Nascita</th>
-                      <th>Luogo di Nascita</th>
-                      <th>Indirizzo</th>
-                      <th>Numero di Telefono</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                        $DB = new mysqli("localhost", "gabbo", "");
-                        $risultato = $DB->query("SELECT * FROM anagrafe.cittadini LIMIT 10")->fetch_all(MYSQLI_NUM);
-                        foreach($risultato as $row){
-                            echo "<tr>";
-                            foreach($row as $column){
-                                echo "<th>$column</th>";
-                            }
-                            echo "</tr>";
-                        }
-                        $DB->close();
-                      ?>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                      <th>ID</th>
-                      <th>Nome</th>
-                      <th>Cognome</th>
-                      <th>Codice Fiscale</th>
-                      <th>Data di Nascita</th>
-                      <th>Luogo di Nascita</th>
-                      <th>Indirizzo</th>
-                      <th>Numero di Telefono</th>
-                    </tr>
-                    </tfoot>
-                  </table>
-                </div>
-                <!-- /.card-body -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">DataTable with default features</h3>
               </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th>Rendering engine</th>
+                      <th>Browser</th>
+                      <th>Platform(s)</th>
+                      <th>Engine version</th>
+                      <th>CSS grade</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>test1</th>
+                      <th>test2</th>
+                      <th>test3</th>
+                      <th>test4</th>
+                      <th>test5</th>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th>Rendering engine</th>
+                      <th>Browser</th>
+                      <th>Platform(s)</th>
+                      <th>Engine version</th>
+                      <th>CSS grade</th>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
               <!-- /.card -->
               <!-- /.card -->
             </div>
@@ -395,6 +387,10 @@
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
+<!-- jQuery -->
+<script src="dipendenze/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap 4 -->
+<script src="dipendenze/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- DataTables  & Plugins -->
 <script src="dipendenze/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="dipendenze/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -408,30 +404,11 @@
 <script src="dipendenze/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
 <script src="dipendenze/plugins/datatables-buttons/js/buttons.print.min.js"></script>
 <script src="dipendenze/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="dipendenze/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- JQVMap -->
-<script src="dipendenze/plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="dipendenze/plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- jQuery Knob Chart -->
-<script src="dipendenze/plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
-<script src="dipendenze/plugins/moment/moment.min.js"></script>
-<script src="dipendenze/plugins/daterangepicker/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="dipendenze/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- overlayScrollbars -->
-<script src="dipendenze/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dipendenze/dist/js/adminlte.js"></script>
-<!-- Summernote -->
-<script src="dipendenze/plugins/summernote/summernote-bs4.min.js"></script>
-<!-- Sparkline -->
-<script src="dipendenze/plugins/sparklines/sparkline.js"></script>
+<script src="dipendenze/dist/js/adminlte.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="dipendenze/dist/js/demo.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dipendenze/dist/js/pages/dashboard.js"></script>
+<!-- Page specific script -->
 <script>
   $(function () {
     $("#example1").DataTable({
