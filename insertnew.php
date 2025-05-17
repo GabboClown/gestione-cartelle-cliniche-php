@@ -262,7 +262,7 @@
     <div class="float-right d-none d-sm-block">
       <b>Versione</b> 1.2.0
     </div>
-    <strong>Copyright &copy; 2023-2024 <a href="https://github.com/GabboClown">Comune di <b>Napoli</b></a>.</strong> Tutti i diritti riservati.
+    <strong>Copyright &copy; 2025-2026 <a href="https://github.com/GabboClown/gestione-cartelle-cliniche-php">Gestione <b>Cartelle Cliniche</b></a>.</strong> Tutti i diritti riservati.
   </footer>
 
   <!-- Control Sidebar -->
