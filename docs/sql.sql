@@ -34,3 +34,11 @@ CREATE TABLE Diagnosi_Quesiti (
     FOREIGN KEY (ID_Diagnosi) REFERENCES Diagnosi(ID) ON DELETE CASCADE,
     FOREIGN KEY (ID_Quesito) REFERENCES Quesiti_Diagnostici(ID) ON DELETE CASCADE
 );
+
+CREATE TABLE Amministratori (
+    ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Nome VARCHAR(50) NOT NULL,
+    Cognome VARCHAR(50) NOT NULL,
+    Email VARCHAR(50) NOT NULL,
+    Password CHAR(64) NOT NULL -- Cifrata in SHA256
+);
