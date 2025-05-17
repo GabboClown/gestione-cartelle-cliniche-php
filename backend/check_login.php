@@ -2,8 +2,6 @@
 
     function login($DB, $username, $pwd){
         $pwd = hash("sha256", $pwd);
-        setcookie("username", $username, time() + 86400, "/");
-        setcookie("userpassword", $pwd, time() + 86400, "/");
         $template = $DB->prepare("SELECT * FROM anagrafe.autorizzati WHERE anagrafe.autorizzati.username = ? AND anagrafe.autorizzati.password = ?");
         $template->bind_param("ss", $username, $pwd);
         $template->execute();

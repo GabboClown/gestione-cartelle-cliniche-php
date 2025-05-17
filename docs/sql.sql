@@ -1,0 +1,37 @@
+CREATE TABLE Paziente (
+    ID INT AUTO_INCREMENT,
+    Cod_fiscale CHAR(16),
+    Nome VARCHAR(50) NOT NULL,
+    Cognome VARCHAR(50) NOT NULL,
+    Data_Nascita DATE NOT NULL,
+    Sesso CHAR(1) NOT NULL,
+    PRIMARY KEY(ID, Cod_fiscale)
+);
+
+CREATE TABLE Ospedale (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Indirizzo VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Diagnosi (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Data_Diagnosi DATE NOT NULL,
+    ID_Paziente INT NOT NULL,
+    ID_Ospedale INT NOT NULL,
+    FOREIGN KEY (ID_Paziente) REFERENCES Paziente(ID) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (ID_Ospedale) REFERENCES Ospedale(ID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE Quesito_Diagnostico (
+    ID INT PRIMARY KEY,
+    Descrizione TEXT NOT NULL
+);
+
+CREATE TABLE Diagnosi_Quesito (
+    ID_Diagnosi INT,
+    ID_Quesito INT,
+    PRIMARY KEY (ID_Diagnosi, ID_Quesito),
+    FOREIGN KEY (ID_Diagnosi) REFERENCES Diagnosi(ID) ON DELETE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (ID_Quesito) REFERENCES Quesito_Diagnostico(ID) ON DELETE CASCADE ON DELETE CASCADE
+);
