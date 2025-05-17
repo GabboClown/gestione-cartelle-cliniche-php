@@ -1,22 +1,41 @@
 <?php
+    // TODO: REMOVE
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    include_once "database/connection.php";
+    session_start();
+
+    if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
+        header("Location: login.html");
+        exit;
+    }
+
     if(isset($_POST)){
         $mode = htmlspecialchars($_GET["admin"]);
-        $DB = new mysqli("localhost", "gabbo", "");
-
-        if($mode == "true"){
-            $template = $DB->prepare("INSERT INTO anagrafe.autorizzati VALUES(NULL, ?, ?)");
-            $template->bind_param("ss", $_POST["username"], hash('sha256', $_POST["password"]));
+        
+        if ($mode == "true") {
+            $template = $conn->prepare("INSERT INTO Amministratori(Nome, Cognome, Email, Password) VALUES (:nome, :cognome, :email, :password)");
+            $template->bindValue(':nome', $_POST["Nome"], SQLITE3_TEXT);
+            $template->bindValue(':cognome', $_POST["Cognome"], SQLITE3_TEXT);
+            $template->bindValue(':email', $_POST["email"], SQLITE3_TEXT);
+            $template->bindValue(':password', hash('sha256', $_POST["password"]), SQLITE3_TEXT);
             $template->execute();
-        }
-
-        else if($mode == 'false'){
-            $template = $DB->prepare("INSERT INTO anagrafe.cittadini VALUES(NULL, ?, ?, ?, ?, ?, ?, ?)");
-            $template->bind_param("sssssss", $_POST["nome"], $_POST["cognome"], $_POST["cod_fisc"], $_POST["d_o_b"], $_POST["p_o_b"], $_POST["indirizzo"], $_POST["num_tel"]);
+        } else if ($mode == "false") {
+            // TODO:  SQLite3Stmt::execute(): Unable to execute statement: NOT NULL constraint failed: Pazienti.Cod_fiscale in /var/www/html/scuola/gestione-cartelle-cliniche-php/backend/insert.php on line 30
+            // TODO: Aggiungere CRUD Cartella clinica (vista per ogni paziente di tutte le problematiche, con aggiunta e rimozione)
+            // TODO: Aggiunta filtri visualizzazione pazienti (ultra 60enni ecc)
+            $template = $conn->prepare("INSERT INTO Pazienti(Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso) VALUES (:cod_fiscale, :nome, :cognome, :data_nascita, :sesso)");
+            $template->bindValue(':cod_fisc', $_POST["Cod_fiscale"], SQLITE3_TEXT);
+            $template->bindValue(':nome', $_POST["Nome"], SQLITE3_TEXT);
+            $template->bindValue(':cognome', $_POST["Cognome"], SQLITE3_TEXT);
+            $template->bindValue(':data_nascita', $_POST["Data_Nascita"], SQLITE3_TEXT);
+            $template->bindValue(':sesso', $_POST["Sesso"], SQLITE3_TEXT);
             $template->execute();
-        }
+        }        
 
         else header("Location: ../dashboard.php");
+        exit;
 
-        header("Location: ../insertnew.php?admin=$mode");
+        header("Location: ../showdata.php?admin=$mode");
     }
     else header("Location: ../dashboard.php");

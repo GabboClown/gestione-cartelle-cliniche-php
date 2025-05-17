@@ -29,6 +29,12 @@
   <link rel="stylesheet" href="dipendenze/dist/css/adminlte.min.css">
   <!-- summernote -->
   <link rel="stylesheet" href="dipendenze/plugins/summernote/summernote-bs4.min.css">
+  <style>
+    td.action > a.nav-link {
+      justify-content: center;
+      display: flex;
+    }
+  </style>
 </head>
 <body class="hold-transition sidebar-mini dark-mode">
 
@@ -138,12 +144,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Database <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "Admin" : "Cittadini";?></h1>
+            <h1>Database <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "Admin" : "Pazienti";?></h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
-              <li class="breadcrumb-item active">Database <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "Admin" : "Cittadini";?></li>
+              <li class="breadcrumb-item active">Database <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "Admin" : "Pazienti";?></li>
             </ol>
           </div>
         </div>
@@ -166,26 +172,26 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-hover">
+                <table class="table table-bordered table-hover datatable">
                   <thead>
                   <tr>
                     <?php
                     if(htmlspecialchars($_GET["admin"]) == "true"){
                         echo   "<th>ID</th>
-                                <th>Username</th>
-                                <th>Password</th>
+                                <th>Email</th>
+                                <th>Nome</th>
+                                <th>Cognome</th>
                                 <th></th>
                                 <th></th>";
                     }
                     else{
                         echo   "<th>ID</th>
+                                <th>Codice Fiscale</th>
                                 <th>Nome</th>
                                 <th>Cognome</th>
-                                <th>Codice Fiscale</th>
                                 <th>Data di Nascita</th>
-                                <th>Luogo di Nascita</th>
-                                <th>Indirizzo</th>
-                                <th>Numero di Telefono</th>
+                                <th>Sesso</th>
+                                <th></th>
                                 <th></th>
                                 <th></th>";
                     }
@@ -194,35 +200,49 @@
                   </thead>
                   <tbody>
                   <?php
-                      $DB = new mysqli("localhost", "gabbo", "");
+                      $admin = htmlspecialchars($_GET["admin"] == "true");
 
-                      $admin = htmlspecialchars($_GET["admin"]);
-                      if($admin == "true") $risultato = $DB->query("SELECT * FROM anagrafe.autorizzati")->fetch_all(MYSQLI_NUM);
-                      else $risultato = $DB->query("SELECT * FROM anagrafe.cittadini")->fetch_all(MYSQLI_NUM);
-
-                      foreach($risultato as $row){
-                          echo "<tr>";
-                          $id = $row[0];
-                          foreach($row as $column){
-                              echo "<th>$column</th>";
-                          }
-                          echo "
-                          <th>
-                            <a class=\"nav-link\" href=\"backend/delete.php?id=$id&pwd=".$_COOKIE["userpassword"]."&admin=$admin\" role=\"button\">
-                                <i class=\"fas fa-user-alt-slash\"></i> Elimina
-                            </a>
-                          </th>
-                          ";
-                          echo "
-                          <th>
-                            <a class=\"nav-link\" href=\"modify.php?id=$id&admin=$admin\" role=\"button\">
-                                <i class=\"fas fa-user-edit\"></i> Modifica
-                            </a>
-                          </th>
-                          ";
-                          echo "</tr>";
+                      if ($admin) {
+                        $result = $conn->query("SELECT ID, Email, Nome, Cognome FROM Amministratori");
+                      } else {
+                        $result = $conn->query("SELECT * FROM Pazienti");
                       }
-                      $DB->close();
+                    
+                      if ($result) {
+                        while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+                          echo "<tr>";
+                          
+                          foreach ($row as $column) {
+                            echo "<td>" . htmlspecialchars($column) . "</td>";
+                          }
+                    
+                          $id = htmlspecialchars($row['ID']);
+                                        
+                          echo "<td class=\"action\">
+                                  <a class=\"nav-link\" href=\"backend/delete.php?id=$id&admin=" . ($admin ? 'true' : 'false') . "\" role=\"button\">
+                                    <i class=\"fas fa-user-alt-slash\"></i>
+                                  </a>
+                                </td>";
+                    
+                          echo "<td class=\"action\">
+                                  <a class=\"nav-link\" href=\"modify.php?id=$id&admin=" . ($admin ? 'true' : 'false') . "\" role=\"button\">
+                                    <i class=\"fas fa-user-edit\"></i>
+                                  </a>
+                                </td>";
+
+                          if(!$admin) {
+                            echo "<td class=\"action\">
+                                  <a class=\"nav-link\" href=\"cartella.php?id=$id\" role=\"button\">
+                                    <i class=\"fas fa-eye\"></i>
+                                  </a>
+                                </td>";
+                          }
+                    
+                          echo "</tr>";
+                        }
+                      } else {
+                        echo "<tr><td colspan='100%'>Nessun dato trovato</td></tr>";
+                      }
                     ?>
                   </tbody>
                   <tfoot>
@@ -230,20 +250,20 @@
                   <?php
                     if(htmlspecialchars($_GET["admin"]) == "true"){
                         echo   "<th>ID</th>
-                                <th>Username</th>
-                                <th>Password</th>
+                                <th>Email</th>
+                                <th>Nome</th>
+                                <th>Cognome</th>
                                 <th></th>
                                 <th></th>";
                     }
                     else{
                         echo   "<th>ID</th>
+                                <th>Codice Fiscale</th>
                                 <th>Nome</th>
                                 <th>Cognome</th>
-                                <th>Codice Fiscale</th>
                                 <th>Data di Nascita</th>
-                                <th>Luogo di Nascita</th>
-                                <th>Indirizzo</th>
-                                <th>Numero di Telefono</th>
+                                <th>Sesso</th>
+                                <th></th>
                                 <th></th>
                                 <th></th>";
                     }
@@ -311,20 +331,20 @@
 <!-- Page specific script -->
 <script>
   $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
+  $('.datatable').each(function() {
+    var table = $(this).DataTable({
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false,
+      buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"]
     });
+
+    // Posiziona i bottoni nel contenitore più vicino alla tabella
+    table.buttons().container().appendTo(
+      $(this).closest('.card-body').find('.col-md-6:eq(0)')
+    );
   });
+});
 </script>
 <?php $conn->close() ?>
 </body>

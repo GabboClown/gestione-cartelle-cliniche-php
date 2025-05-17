@@ -341,6 +341,7 @@
                   <thead>
                     <tr>
                       <th>ID</th>
+                      <th>Email</th>
                       <th>Nome</th>
                       <th>Cognome</th>
                     </tr>
@@ -353,6 +354,7 @@
                       while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
                         echo "<tr>";
                         echo "<td>" . htmlspecialchars($row['ID']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['Email']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['Nome']) . "</td>";
                         echo "<td>" . htmlspecialchars($row['Cognome']) . "</td>";
                         echo "</tr>";
@@ -365,6 +367,7 @@
                   <tfoot>
                     <tr>
                       <th>ID</th>
+                      <th>Email</th>
                       <th>Nome</th>
                       <th>Cognome</th>
                     </tr>

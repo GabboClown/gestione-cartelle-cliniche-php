@@ -133,12 +133,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Modifica i dati di un <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "cittadino" ?></h1>
+            <h1>Modifica i dati di un <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "paziente" ?></h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
-              <li class="breadcrumb-item active">Modifica i dati di un <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "cittadino" ?></li>
+              <li class="breadcrumb-item active">Modifica i dati di un <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "paziente" ?></li>
             </ol>
           </div>
         </div>
@@ -158,107 +158,107 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form action="backend/alter.php?admin=<?php echo htmlspecialchars($_GET["admin"])?>&id=<?php echo htmlspecialchars($_GET["id"])?>" method="post">
+              <form action="backend/alter.php?admin=<?php echo htmlspecialchars($_GET["admin"]) ?>&id=<?php echo htmlspecialchars($_GET["id"]) ?>" method="post">
                 <div class="card-body">
-                    <?php
-                      
-                      $id = htmlspecialchars($_GET["id"]);
-                      $mode = htmlspecialchars($_GET["admin"]);
+                  <?php
+                    $id = (int) $_GET["id"];
+                    $mode = htmlspecialchars($_GET["admin"]);
 
-                      $DB = new mysqli("localhost", "gabbo", "");
+                    if ($mode == "true") {
+                      $template = $conn->prepare("SELECT * FROM Amministratori WHERE ID = :id");
+                      $template->bindValue(':id', $id, SQLITE3_INTEGER);
+                      $result = $template->execute();
+                      $row = $result->fetchArray(SQLITE3_ASSOC);
 
-                      if($mode == "true"){
+                      echo "
+                        <div class=\"input-group mb-3\">
+                        <div class=\"input-group-prepend\">
+                          <span class=\"input-group-text\">
+                            <i class=\"fa fa-address-book\"></i>
+                          </span>
+                        </div>
+                        <input type=\"text\" class=\"form-control\" name=\"Nome\" placeholder=\"Nome\" value=\"" . htmlspecialchars($row["Nome"]) . "\">
+
+                        <div class=\"input-group-prepend\">
+                          <span class=\"input-group-text\">
+                            <i class=\"fa fa-address-book\"></i>
+                          </span>
+                        </div>
+                        <input type=\"text\" class=\"form-control\" name=\"Cognome\" placeholder=\"Cognome\" value=\"" . htmlspecialchars($row["Cognome"]) . "\">
+
+                        <div class=\"input-group-prepend\">
+                          <span class=\"input-group-text\">
+                            <i class=\"fa fa-address-book\"></i>
+                          </span>
+                        </div>
+                        <input type=\"email\" class=\"form-control\" name=\"email\" placeholder=\"Username\" value=\"" . htmlspecialchars($row["Email"]) . "\">
                         
-                        $template = $DB->prepare("SELECT * FROM anagrafe.autorizzati WHERE `id` = ?");
-                        $template->bind_param('i', $id);
-                        $template->execute();
-
-                        $risultato = $template->get_result()->fetch_all(MYSQLI_ASSOC);
-
-                        echo "
-                          <div class=\"input-group mb-3\">
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-address-book\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"username\" placeholder=\"Username\" value=\"".$risultato[0]["username"]."\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-key\"></i>
-                              </span>
-                            </div>
-                            <input type=\"password\" class=\"form-control\" name=\"password\" placeholder=\"Password\" value=\"".$risultato[0]["password"]."\">
+                          <div class=\"input-group-prepend\">
+                            <span class=\"input-group-text\">
+                              <i class=\"fa fa-key\"></i>
+                            </span>
                           </div>
-                        ";
-                      }
-                      else{
+                          <input type=\"password\" class=\"form-control\" name=\"password\" placeholder=\"Password\" value=\"" . htmlspecialchars($row["Password"]) . "\">
+                        </div>
+                      ";
+                    } else {
+                      $template = $conn->prepare("SELECT * FROM Pazienti WHERE id = :id");
+                      $template->bindValue(':id', $id, SQLITE3_INTEGER);
+                      $result = $template->execute();
+                      $row = $result->fetchArray(SQLITE3_ASSOC);
 
-                        $template = $DB->prepare("SELECT * FROM anagrafe.cittadini WHERE `id` = ?");
-                        $template->bind_param('i', $id);
-                        $template->execute();
-
-                        $risultato = $template->get_result()->fetch_all(MYSQLI_ASSOC);
-
-                        echo "
-                          <div class=\"input-group mb-3\">
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-address-book\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"nome\" placeholder=\"Nome\" value=\"".$risultato[0]["nome"]."\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-address-book\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"cognome\" placeholder=\"Cognome\" value=\"".$risultato[0]["cognome"]."\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-id-badge\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"cod_fisc\" placeholder=\"Codice Fiscale\" value=\"".$risultato[0]["codice_fiscale"]."\">
+                      echo '
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fa fa-address-book"></i>
+                            </span>
                           </div>
+                          <input type="text" class="form-control" name="Nome" placeholder="Nome" value="' . htmlspecialchars($row["Nome"]) . '">
+                        </div>
 
-                          <div class=\"input-group mb-3\">
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-calendar\"></i>
-                              </span>
-                            </div>
-                            <input type=\"date\" class=\"form-control\" name=\"d_o_b\" placeholder=\"Data di Nascita\" value=\"".$risultato[0]["data_di_nascita"]."\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-map-marker\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"p_o_b\" placeholder=\"Luogo di Nascita\" value=\"".$risultato[0]["luogo_di_nascita"]."\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-home\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"indirizzo\" placeholder=\"Indirizzo di Residenza\" value=\"".$risultato[0]["indirizzo"]."\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-phone\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"num_tel\" placeholder=\"Numero di Telefono\" value=\"".$risultato[0]["num_telefono"]."\">
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fa fa-address-book"></i>
+                            </span>
                           </div>
-                        ";
-                      }
-                    
-                    ?>
-                <!-- /.card-body -->
+                          <input type="text" class="form-control" name="Cognome" placeholder="Cognome" value="' . htmlspecialchars($row["Cognome"]) . '">
+                        </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fa fa-id-badge"></i>
+                            </span>
+                          </div>
+                          <input type="text" class="form-control" name="Cod_fiscale" placeholder="Codice Fiscale" value="' . htmlspecialchars($row["Cod_fiscale"]) . '">
+                        </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fa fa-calendar"></i>
+                            </span>
+                          </div>
+                          <input type="date" class="form-control" name="Data_Nascita" placeholder="Data di Nascita" value="' . htmlspecialchars($row["Data_Nascita"]) . '">
+                        </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <label class="input-group-text" for="sesso">
+                              <i class="fa fa-venus-mars"></i>
+                            </label>
+                          </div>
+                          <select class="custom-select" name="Sesso" id="sesso">
+                            <option value="M" ' . ($row["Sesso"] == "M" ? "selected" : "") . '>Maschio</option>
+                            <option value="F" ' . ($row["Sesso"] == "F" ? "selected" : "") . '>Femmina</option>
+                          </select>
+                        </div>
+                      ';
+                    }
+                  ?>
+                  <!-- /.card-body -->
                   <div class="card-footer">
                     <button type="submit" class="btn btn-primary">Invia</button>
                   </div>

@@ -132,12 +132,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Inserisci un nuovo <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "cittadino" ?></h1>
+            <h1>Inserisci un nuovo <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "paziente" ?></h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
-              <li class="breadcrumb-item active">Inserisci un nuovo <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "cittadino" ?></li>
+              <li class="breadcrumb-item active">Inserisci un nuovo <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "paziente" ?></li>
             </ol>
           </div>
         </div>
@@ -171,72 +171,81 @@
                                 <i class=\"fa fa-address-book\"></i>
                               </span>
                             </div>
-                            <input type=\"text\" class=\"form-control\" name=\"username\" placeholder=\"Username\">
+                            <input type=\"email\" class=\"form-control\" name=\"email\" placeholder=\"Email\" required>
 
                             <div class=\"input-group-prepend\">
                               <span class=\"input-group-text\">
                                 <i class=\"fa fa-key\"></i>
                               </span>
                             </div>
-                            <input type=\"password\" class=\"form-control\" name=\"password\" placeholder=\"Password\">
+                            <input type=\"password\" class=\"form-control\" name=\"password\" placeholder=\"Password\" required>
+
+                            <div class=\"input-group-prepend\">
+                              <span class=\"input-group-text\">
+                                <i class=\"fa fa-key\"></i>
+                              </span>
+                            </div>
+                            <input type=\"text\" class=\"form-control\" name=\"Nome\" placeholder=\"Nome\" required>
+
+                            <div class=\"input-group-prepend\">
+                              <span class=\"input-group-text\">
+                                <i class=\"fa fa-key\"></i>
+                              </span>
+                            </div>
+                            <input type=\"text\" class=\"form-control\" name=\"Cognome\" placeholder=\"Cognome\" required>
                           </div>
                         ";
                       }
                       else{
-                        echo "
-                          <div class=\"input-group mb-3\">
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-address-book\"></i>
+                          echo '
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-address-book"></i>
                               </span>
                             </div>
-                            <input type=\"text\" class=\"form-control\" name=\"nome\" placeholder=\"Nome\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-address-book\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"cognome\" placeholder=\"Cognome\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-id-badge\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"cod_fisc\" placeholder=\"Codice Fiscale\">
+                            <input type="text" class="form-control" name="Nome" placeholder="Nome" required>
                           </div>
 
-                          <div class=\"input-group mb-3\">
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-calendar\"></i>
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-address-book"></i>
                               </span>
                             </div>
-                            <input type=\"date\" class=\"form-control\" name=\"d_o_b\" placeholder=\"Data di Nascita\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-map-marker\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"p_o_b\" placeholder=\"Luogo di Nascita\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-home\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"indirizzo\" placeholder=\"Indirizzo di Residenza\">
-
-                            <div class=\"input-group-prepend\">
-                              <span class=\"input-group-text\">
-                                <i class=\"fa fa-phone\"></i>
-                              </span>
-                            </div>
-                            <input type=\"text\" class=\"form-control\" name=\"num_tel\" placeholder=\"Numero di Telefono\">
+                            <input type="text" class="form-control" name="Cognome" placeholder="Cognome" required>
                           </div>
-                        ";
+
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-id-badge"></i>
+                              </span>
+                            </div>
+                            <input type="text" class="form-control" name="Cod_fiscale" placeholder="Codice Fiscale" required>
+                          </div>
+
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-calendar"></i>
+                              </span>
+                            </div>
+                            <input type="date" class="form-control" name="Data_Nascita" placeholder="Data di Nascita" required>
+                          </div>
+
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <label class="input-group-text" for="sesso">
+                                <i class="fa fa-venus-mars"></i>
+                              </label>
+                            </div>
+                            <select class="custom-select" name="Sesso" id="sesso" required>
+                              <option value="M">Maschio</option>
+                              <option value="F">Femmina</option>
+                            </select>
+                          </div>
+                        ';
                       }
                     
                     ?>

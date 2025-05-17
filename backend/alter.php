@@ -1,23 +1,58 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+    include_once "database/connection.php";
+    session_start();
+
+    if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
+        header("Location: login.html");
+        exit;
+    }
+
     if(isset($_POST)){
         $mode = htmlspecialchars($_GET["admin"]);
         $id = htmlspecialchars($_GET["id"]);
-        $DB = new mysqli("localhost", "gabbo", "");
 
-        if($mode == "true"){
-            $template = $DB->prepare("UPDATE anagrafe.autorizzati SET username = ?, password = ? WHERE id = ?");
-            $template->bind_param("ssi", $_POST["username"], hash('sha256', $_POST["password"]), $id);
-            $template->execute();
-        }
+        if ($mode === "true") {
+            $stmt = $conn->prepare('SELECT Password FROM Amministratori WHERE ID = :id');
+            $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+            $result = $stmt->execute();
 
-        else if($mode == 'false'){
-            $template = $DB->prepare("UPDATE anagrafe.cittadini SET nome = ?, cognome = ?, codice_fiscale = ?, data_di_nascita = ?, luogo_di_nascita = ?, indirizzo = ?, num_telefono = ? WHERE id = ?");
-            $template->bind_param("sssssssi", $_POST["nome"], $_POST["cognome"], $_POST["cod_fisc"], $_POST["d_o_b"], $_POST["p_o_b"], $_POST["indirizzo"], $_POST["num_tel"], $id);
-            $template->execute();
+            $row = $result->fetchArray(SQLITE3_ASSOC);
+            $oldPwd = $row['Password'];
+            $newPwd = $_POST["password"];
+
+            // Se la nuova password cambiata, allora viene rehashata, altrimenti non verrà cambiata
+            $newPwd = $oldPwd == $newPwd ? $oldPwd : hash('sha256', $newPwd);
+
+            $stmt = $conn->prepare("UPDATE Amministratori SET Nome = :nome, Cognome= :cognome, Email = :email, password = :password WHERE id = :id");
+            $stmt->bindValue(':nome', $_POST["Nome"], SQLITE3_TEXT);
+            $stmt->bindValue(':cognome', $_POST["Cognome"], SQLITE3_TEXT);
+            $stmt->bindValue(':email', $_POST["email"], SQLITE3_TEXT);
+            $stmt->bindValue(':password', $newPwd, SQLITE3_TEXT);
+            $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+            $stmt->execute();
+        } 
+        else if ($mode === "false") {
+            $stmt = $conn->prepare("UPDATE Pazienti SET 
+                Nome = :nome, 
+                Cognome = :cognome, 
+                Cod_fiscale = :codice_fiscale, 
+                Data_Nascita = :data_di_nascita, 
+                Sesso = :sesso
+                WHERE id = :id");
+
+            $stmt->bindValue(':nome', $_POST["Nome"], SQLITE3_TEXT);
+            $stmt->bindValue(':cognome', $_POST["Cognome"], SQLITE3_TEXT);
+            $stmt->bindValue(':codice_fiscale', $_POST["Cod_fiscale"], SQLITE3_TEXT);
+            $stmt->bindValue(':data_di_nascita', $_POST["Data_Nascita"], SQLITE3_TEXT);
+            $stmt->bindValue(':sesso', $_POST["Sesso"], SQLITE3_TEXT);
+            $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+            $stmt->execute();
         }
 
         else header("Location: ../dashboard.php");
 
-        header("Location: ../insertnew.php?admin=$mode");
+        header("Location: ../showdata.php?admin=$mode");
     }
     else header("Location: ../dashboard.php");

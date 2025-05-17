@@ -1,20 +1,29 @@
 <?php
-    $DB = new mysqli("localhost", "gabbo", "");
+    include_once "database/connection.php";
+    session_start();
+
+    if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
+        header("Location: login.html");
+        exit;
+    }
+
     $id = htmlspecialchars($_GET["id"]);
-    $pwd = htmlspecialchars($_GET["pwd"]);
     $admin = htmlspecialchars($_GET["admin"]);
 
-    if($admin == "true") $table = "autorizzati";
-    else if($admin == "false") $table = "cittadini";
-    else header("Location ../showdata.php?admin=$admin");
+    $table = match($admin) {
+        "true" => "Amministratori",
+        "false" => "Pazienti",
+        default => null
+    };
 
-    $template = $DB->prepare("SELECT * FROM anagrafe.autorizzati WHERE `password` = ?");
-    $template->bind_param("s", $pwd);
-    $template->execute();
+    if($table === null){
+        header("Location ../showdata.php?admin=$admin");
+        exit;
+    }
 
-    if($template->get_result()->num_rows > 0)
-        $template = $DB->prepare("DELETE FROM anagrafe.$table WHERE `id` = ?");
-        $template->bind_param("i", $id);
-        $template->execute();
+    $stmt = $conn->prepare("DELETE FROM $table WHERE ID = :id");
+    $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+    $stmt->execute();
+
     
     header("Location: ../showdata.php?admin=$admin");
