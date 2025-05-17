@@ -1,21 +1,36 @@
 <?php
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+    include_once "database/connection.php";
+    session_start();
 
-    function login($DB, $username, $pwd){
+    function login($conn, $email, $pwd) {
         $pwd = hash("sha256", $pwd);
-        $template = $DB->prepare("SELECT * FROM anagrafe.autorizzati WHERE anagrafe.autorizzati.username = ? AND anagrafe.autorizzati.password = ?");
-        $template->bind_param("ss", $username, $pwd);
-        $template->execute();
+        $stmt = $conn->prepare("SELECT ID FROM Amministratori WHERE Email = :email AND Password = :password");
+        $stmt->bindValue(':email', $email, SQLITE3_TEXT);
+        $stmt->bindValue(':password', $pwd, SQLITE3_TEXT);
+        $result = $stmt->execute();
 
-        return $template->get_result()->num_rows > 0;
+        if ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+            return $row["ID"];
+        } else {
+            return -1;
+        }
     }
 
-
-    if(isset($_POST)){
-        $userDB = new mysqli("localhost", "gabbo", "");
-        $username = $_POST["username"];
-        $pwd = $_POST["password"];
-        setcookie("login", login($userDB, $username, $pwd) === TRUE ? "SUCCESSFULL" : "NOT SUCCESSFULL", time() + 86400, "/");
-        $userDB->close();
-        header("Location: ../login.html");
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = $_POST["email"] ?? '';
+        $pwd = $_POST["password"] ?? '';
+        $ID = login($conn, $email, $pwd);
+        
+        if($ID != -1) {
+            $_SESSION['isLoggedIn'] = true;
+            $_SESSION['ID'] = $ID;
+            header("Location: ../dashboard.php");
+            exit();
+        } else {
+            header("Location: ../login.html?error=1");
+            exit();
+        }
     }
-    else header("Location: ../login.html");
+

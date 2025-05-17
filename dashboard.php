@@ -1,19 +1,17 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+  session_start();
 
-if (!isset($_COOKIE['login']) || $_COOKIE['login'] != 'SUCCESSFULL') {
-    header('Location: login.html');
-}
+  if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
+      header("Location: login.html");
+      exit;
+  }
 ?>
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Comune di Napoli | Dashboard</title>
+  <title>Gestione Cartelle Cliniche | Dashboard</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -41,7 +39,7 @@ if (!isset($_COOKIE['login']) || $_COOKIE['login'] != 'SUCCESSFULL') {
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="dipendenze/dist/img/Comune di Napoli.png" alt="Logo Comune di Napoli" height="60" width="60">
+    <img class="animation__shake" src="dipendenze/dist/img/Caduceus.svg" alt="Logo Gestione Cartelle Cliniche" height="60" width="60">
   </div>
 
   <!-- Navbar -->
@@ -71,7 +69,7 @@ if (!isset($_COOKIE['login']) || $_COOKIE['login'] != 'SUCCESSFULL') {
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="dashboard.php" class="brand-link">
-      <img src="dipendenze/dist/img/Comune di Napoli.png" alt="Logo Comune di Napoli" class="brand-image img-circle">
+      <img src="dipendenze/dist/img/Caduceus.svg" alt="Logo Gestione Cartelle Cliniche" class="brand-image img-circle">
       <span class="brand-text font-weight-light">Comune di <b>Napoli</b></span>
     </a>
 

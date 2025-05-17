@@ -1,5 +1,6 @@
 <?php
-    foreach($_COOKIE as $key => $value){
-        setcookie($key, NULL, time() - 1000, "/");
-    }
+    session_start();
+    session_unset();
+    session_destroy();
     header("Location: ../login.html");
+    exit;
