@@ -18,7 +18,6 @@ sessions/
 
 # === DIRECTORY DI DEPLOY / BUILD ===
 build/
-dist/
 node_modules/
 
 # === IDE / EDITOR ===
