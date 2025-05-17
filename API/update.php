@@ -13,31 +13,36 @@
         !empty($data->Data_Nascita) &&
         !empty($data->Sesso)
     ) {
-        $query = "UPDATE Pazienti 
-                  SET Cod_fiscale = :cod_fiscale,
-                      Nome = :nome,
-                      Cognome = :cognome,
-                      Data_Nascita = :data_nascita,
-                      Sesso = :sesso
-                  WHERE ID = :id";
+        if(strtolower($data->Sesso) != "m" || strtolower($data->Sesso) != "f") {
+            $query = "UPDATE Pazienti 
+                SET Cod_fiscale = :cod_fiscale,
+                    Nome = :nome,
+                    Cognome = :cognome,
+                    Data_Nascita = :data_nascita,
+                    Sesso = :sesso
+                WHERE ID = :id";
 
-        $stmt = $conn->prepare($query);
+            $stmt = $conn->prepare($query);
 
-        $stmt->bindValue(':cod_fiscale', $data->Cod_fiscale, SQLITE3_TEXT);
-        $stmt->bindValue(':nome', $data->Nome, SQLITE3_TEXT);
-        $stmt->bindValue(':cognome', $data->Cognome, SQLITE3_TEXT);
-        $stmt->bindValue(':data_nascita', $data->Data_Nascita, SQLITE3_TEXT);
-        $stmt->bindValue(':sesso', $data->Sesso, SQLITE3_TEXT);
-        $stmt->bindValue(':id', $data->ID, SQLITE3_INTEGER);
+            $stmt->bindValue(':cod_fiscale', $data->Cod_fiscale, SQLITE3_TEXT);
+            $stmt->bindValue(':nome', $data->Nome, SQLITE3_TEXT);
+            $stmt->bindValue(':cognome', $data->Cognome, SQLITE3_TEXT);
+            $stmt->bindValue(':data_nascita', $data->Data_Nascita, SQLITE3_TEXT);
+            $stmt->bindValue(':sesso', $data->Sesso, SQLITE3_TEXT);
+            $stmt->bindValue(':id', $data->ID, SQLITE3_INTEGER);
 
-        $result = $stmt->execute();
+            $result = $stmt->execute();
 
-        if ($conn->changes() > 0) {
-            http_response_code(200);
-            echo json_encode(["message" => "Paziente aggiornato con successo."]);
+            if ($conn->changes() > 0) {
+                http_response_code(200);
+                echo json_encode(["message" => "Paziente aggiornato con successo."]);
+            } else {
+                http_response_code(404);
+                echo json_encode(["message" => "Nessun paziente trovato con l'ID fornito."]);
+            }
         } else {
-            http_response_code(404);
-            echo json_encode(["message" => "Nessun paziente trovato con l'ID fornito."]);
+            http_response_code(400);
+            echo json_encode(["message" => "Il formato per il sesso non è supportato"]);
         }
     } else {
         http_response_code(400);
