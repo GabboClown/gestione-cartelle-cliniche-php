@@ -24,7 +24,7 @@ CREATE TABLE Diagnosi (
 
 CREATE TABLE Quesiti_Diagnostici (
     ID INTEGER PRIMARY KEY,
-    Descrizione TEXT NOT NULL
+    Descrizione TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE Diagnosi_Quesiti (
