@@ -1,7 +1,4 @@
 <?php
-    // TODO: REMOVE
-    error_reporting(E_ALL);
-    ini_set('display_errors', 1);
     include_once "database/connection.php";
     session_start();
 
@@ -21,11 +18,10 @@
             $template->bindValue(':password', hash('sha256', $_POST["password"]), SQLITE3_TEXT);
             $template->execute();
         } else if ($mode == "false") {
-            // TODO:  SQLite3Stmt::execute(): Unable to execute statement: NOT NULL constraint failed: Pazienti.Cod_fiscale in /var/www/html/scuola/gestione-cartelle-cliniche-php/backend/insert.php on line 30
             // TODO: Aggiungere CRUD Cartella clinica (vista per ogni paziente di tutte le problematiche, con aggiunta e rimozione)
             // TODO: Aggiunta filtri visualizzazione pazienti (ultra 60enni ecc)
             $template = $conn->prepare("INSERT INTO Pazienti(Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso) VALUES (:cod_fiscale, :nome, :cognome, :data_nascita, :sesso)");
-            $template->bindValue(':cod_fisc', $_POST["Cod_fiscale"], SQLITE3_TEXT);
+            $template->bindValue(':cod_fiscale', $_POST["Cod_fiscale"], SQLITE3_TEXT);
             $template->bindValue(':nome', $_POST["Nome"], SQLITE3_TEXT);
             $template->bindValue(':cognome', $_POST["Cognome"], SQLITE3_TEXT);
             $template->bindValue(':data_nascita', $_POST["Data_Nascita"], SQLITE3_TEXT);
@@ -34,7 +30,6 @@
         }        
 
         else header("Location: ../dashboard.php");
-        exit;
 
         header("Location: ../showdata.php?admin=$mode");
     }
