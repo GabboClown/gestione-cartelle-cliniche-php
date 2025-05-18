@@ -27,7 +27,7 @@
             $_SESSION['ID'] = $ID;
             header("Location: ../dashboard.php");
         } else {
-            header("Location: ../ adminLogin.php?error=1");
+            header("Location: ../adminLogin.php?error=1");
         }
         $conn->close();
     }

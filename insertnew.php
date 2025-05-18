@@ -128,7 +128,7 @@
         <?php else :?>
           <li class="nav-item">
             <a href=<?= "modify.php?id=" . $_SESSION['ID'] ."&admin=false" ?> class="nav-link">
-              <i class="nav-icon fas fa-chart-bar"></i>
+              <i class="nav-icon fas fa-user-edit"></i>
               <p>
               Modifica il tuo profilo
               </p>
@@ -136,7 +136,7 @@
           </li>
           <li class="nav-item">
             <a href=<?= "cartella.php?id=" . $_SESSION['ID'] ?> class="nav-link">
-              <i class="nav-icon fas fa-chart-bar"></i>
+              <i class="nav-icon fas fa-eye"></i>
               <p>
               Visualizza la cartella
               </p>

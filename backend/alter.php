@@ -1,11 +1,9 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
     include_once "database/connection.php";
     session_start();
 
     if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-        header("Location: login.php");
+        header("Location: ../login.php");
         exit;
     }
 
