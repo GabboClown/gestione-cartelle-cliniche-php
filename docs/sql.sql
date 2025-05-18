@@ -4,7 +4,9 @@ CREATE TABLE Pazienti (
     Nome VARCHAR(50) NOT NULL,
     Cognome VARCHAR(50) NOT NULL,
     Data_Nascita DATE NOT NULL,
-    Sesso CHAR(1) NOT NULL
+    Sesso CHAR(1) NOT NULL,
+    Email VARCHAR(50) NOT NULL UNIQUE,
+    Password CHAR(64) NOT NULL -- Cifrata in SHA256
 );
 
 CREATE TABLE Ospedali (

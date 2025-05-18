@@ -19,6 +19,7 @@
             $template->execute();
         } else if ($mode == "false") {
             // TODO: Aggiungere CRUD Cartella clinica (vista per ogni paziente di tutte le problematiche, con aggiunta e rimozione)
+            // TODO: DIFFERENZIA LOGIN
             $template = $conn->prepare("INSERT INTO Pazienti(Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso) VALUES (:cod_fiscale, :nome, :cognome, :data_nascita, :sesso)");
             $template->bindValue(':cod_fiscale', $_POST["Cod_fiscale"], SQLITE3_TEXT);
             $template->bindValue(':nome', $_POST["Nome"], SQLITE3_TEXT);

@@ -205,10 +205,10 @@
               <h3>
                   <?php 
                     $numMaggiorenni = $conn->querySingle("SELECT COUNT(*) AS Numero FROM Pazienti WHERE Data_Nascita <= date('now', '-18 years')", true);
-                    if($numMaggiorenni != 0 && $numPazienti != 0){
-                      echo round(($numMaggiorenni["Numero"] / $numPazienti["Numero"]) * 100, 2);
-                    } else {
+                    if ($numPazienti["Numero"] == 0) {
                       echo 0;
+                    } else {
+                        echo round(($numMaggiorenni["Numero"] / $numPazienti["Numero"]) * 100, 2);
                     }
                     ?>
                   <sup style="font-size: 20px">%</sup>
@@ -229,10 +229,10 @@
                 <h3>
                   <?php 
                     $numOver65 = $conn->querySingle("SELECT COUNT(*) AS Numero FROM Pazienti WHERE Data_Nascita <= date('now', '-65 years')", true);
-                    if($numOver65["Numero"] != 0 && $numPazienti["Numero"] != 0) {
-                      echo round(($numOver65["Numero"] / $numPazienti["Numero"]) * 100, 2);
-                    } else {
+                    if ($numPazienti["Numero"] == 0) {
                       echo 0;
+                    } else {
+                        echo round(($numOver65["Numero"] / $numPazienti["Numero"]) * 100, 2);
                     }
                   ?>
                   <sup style="font-size: 20px">%</sup>
