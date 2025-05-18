@@ -28,7 +28,7 @@
       exit;
   }
 
-  
+
   $query = "
         SELECT 
             D.Data_Diagnosi,
@@ -140,6 +140,12 @@
               <a href="insertnew.php?admin=false" class="nav-link">
                 <i class="fa fa-user-plus nav-icon"></i>
                 <p>Inserisci</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="newdiagnosis.php" class="nav-link">
+                <i class="fa fa-user-plus nav-icon"></i>
+                <p>Aggiungi Diagnosi</p>
               </a>
             </li>
           </ul>
