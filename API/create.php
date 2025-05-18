@@ -7,11 +7,20 @@
     $data = json_decode(file_get_contents("php://input"));
 
     // Controllo che i dati necessari siano presenti
-    if (!empty($data->Cod_fiscale) && !empty($data->Nome) && !empty($data->Cognome) && !empty($data->Data_Nascita) && !empty($data->Sesso)) {
+    if (
+        !empty($data->ID) &&
+        !empty($data->Cod_fiscale) &&
+        !empty($data->Nome) &&
+        !empty($data->Cognome) &&
+        !empty($data->Data_Nascita) &&
+        !empty($data->Sesso) && 
+        !empty($data->Email) &&
+        !empty($data->Password)
+    ) {
         if(strtolower($data->Sesso) != "m" || strtolower($data->Sesso) != "f") {
             // Preparazione della query parametrica
-            $query = "INSERT INTO Pazienti (Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso) 
-            VALUES (:Cod_fiscale, :Nome, :Cognome, :Data_Nascita, :Sesso)";
+            $query = "INSERT INTO Pazienti (Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso, Email, Password) 
+            VALUES (:Cod_fiscale, :Nome, :Cognome, :Data_Nascita, :Sesso, :Email, :Password)";
 
             $stmt = $conn->prepare($query);
 
@@ -21,6 +30,8 @@
             $stmt->bindValue(':Cognome', $data->Cognome, SQLITE3_TEXT);
             $stmt->bindValue(':Data_Nascita', $data->Data_Nascita, SQLITE3_TEXT);
             $stmt->bindValue(':Sesso', $data->Sesso, SQLITE3_TEXT);
+            $stmt->bindValue(':Email', $data->Email, SQLITE3_TEXT);
+            $stmt->bindValue(':Password', hash('sha256', $data->Password), SQLITE3_TEXT);
 
             // Esecuzione della query
             $result = $stmt->execute();

@@ -3,7 +3,7 @@
     include_once '../backend/database/connection.php';
     header("Access-Control-Allow-Methods: GET");
 
-    $query = "SELECT ID, Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso FROM Pazienti";
+    $query = "SELECT ID, Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso, Email FROM Pazienti";
     $result = $conn->query($query);
 
     if ($result && $result->numColumns() > 0) {

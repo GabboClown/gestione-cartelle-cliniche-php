@@ -5,7 +5,7 @@ ini_set('display_errors', 1);
     session_start();
 
     if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-        header("Location: login.html");
+        header("Location: login.php");
         exit;
     }
 
@@ -13,7 +13,7 @@ ini_set('display_errors', 1);
         $mode = htmlspecialchars($_GET["admin"]);
         $id = htmlspecialchars($_GET["id"]);
 
-        if ($mode === "true") {
+        if ($mode === "true" && $_SESSION['isAdmin'] == true) {
             $stmt = $conn->prepare('SELECT Password FROM Amministratori WHERE ID = :id');
             $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
             $result = $stmt->execute();
@@ -34,12 +34,25 @@ ini_set('display_errors', 1);
             $stmt->execute();
         } 
         else if ($mode === "false") {
+            $stmt = $conn->prepare('SELECT Password FROM Pazienti WHERE ID = :id');
+            $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
+            $result = $stmt->execute();
+
+            $row = $result->fetchArray(SQLITE3_ASSOC);
+            $oldPwd = $row['Password'];
+            $newPwd = $_POST["Password"];
+
+            // Se la nuova password cambiata, allora viene rehashata, altrimenti non verrà cambiata
+            $newPwd = $oldPwd == $newPwd ? $oldPwd : hash('sha256', $newPwd);
+
             $stmt = $conn->prepare("UPDATE Pazienti SET 
                 Nome = :nome, 
                 Cognome = :cognome, 
                 Cod_fiscale = :codice_fiscale, 
                 Data_Nascita = :data_di_nascita, 
-                Sesso = :sesso
+                Sesso = :sesso,
+                Email = :email,
+                Password = :password
                 WHERE id = :id");
 
             $stmt->bindValue(':nome', $_POST["Nome"], SQLITE3_TEXT);
@@ -47,6 +60,8 @@ ini_set('display_errors', 1);
             $stmt->bindValue(':codice_fiscale', $_POST["Cod_fiscale"], SQLITE3_TEXT);
             $stmt->bindValue(':data_di_nascita', $_POST["Data_Nascita"], SQLITE3_TEXT);
             $stmt->bindValue(':sesso', $_POST["Sesso"], SQLITE3_TEXT);
+            $stmt->bindValue(':email', $_POST["Email"], SQLITE3_TEXT);
+            $stmt->bindValue(':password', $newPwd, SQLITE3_TEXT);
             $stmt->bindValue(':id', $id, SQLITE3_INTEGER);
             $stmt->execute();
         }

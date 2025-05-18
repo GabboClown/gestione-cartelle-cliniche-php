@@ -3,7 +3,7 @@
   session_start();
 
   if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-      header("Location: login.html");
+      header("Location: login.php");
       exit;
   }
 
@@ -24,7 +24,7 @@
   $patient = $patientResult->fetchArray(SQLITE3_ASSOC);
 
   if (!$patient) {
-      header("Location: index.php");
+      header("Location: dashboard.php");
       exit;
   }
 
@@ -113,66 +113,85 @@
       <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-header">Gestionale</li>
-        <li class="nav-item">
-          <a href="dashboard.php" class="nav-link">
-            <i class="nav-icon fas fa-chart-bar"></i>
-            <p>
-            Statistiche
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fa fa-users"></i>
+        <?php if($_SESSION['isAdmin'] == true) :?>
+          <li class="nav-item">
+            <a href="dashboard.php" class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
               <p>
-              Pazienti
-              <i class="fas fa-angle-left right"></i>
+              Statistiche
               </p>
             </a>
-          <ul class="nav nav-treeview" style="display: none;">
-            <li class="nav-item">
-              <a href="showdata.php?admin=false" class="nav-link">
-                <i class="fa fa-user-circle nav-icon"></i>
-                <p>Mostra</p>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-users"></i>
+                <p>
+                Pazienti
+                <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
-            </li>
-            <li class="nav-item">
-              <a href="insertnew.php?admin=false" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Inserisci</p>
+            <ul class="nav nav-treeview" style="display: none;">
+              <li class="nav-item">
+                <a href="showdata.php?admin=false" class="nav-link">
+                  <i class="fa fa-user-circle nav-icon"></i>
+                  <p>Mostra</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="insertnew.php?admin=false" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Inserisci</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="newdiagnosis.php" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Aggiungi Diagnosi</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-lock"></i>
+                <p>
+                Amministratori
+                <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
-            </li>
-            <li class="nav-item">
-              <a href="newdiagnosis.php" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Aggiungi Diagnosi</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fa fa-lock"></i>
+            <ul class="nav nav-treeview" style="display: none;">
+              <li class="nav-item">
+                <a href="showdata.php?admin=true" class="nav-link">
+                  <i class="fa fa-user-circle nav-icon"></i>
+                  <p>Mostra</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="insertnew.php?admin=true" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Inserisci</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        <?php else :?>
+          <li class="nav-item">
+            <a href=<?= "modify.php?id=" . $_SESSION['ID'] ."&admin=false" ?> class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
               <p>
-              Amministratori
-              <i class="fas fa-angle-left right"></i>
+              Modifica il tuo profilo
               </p>
             </a>
-          <ul class="nav nav-treeview" style="display: none;">
-            <li class="nav-item">
-              <a href="showdata.php?admin=true" class="nav-link">
-                <i class="fa fa-user-circle nav-icon"></i>
-                <p>Mostra</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="insertnew.php?admin=true" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Inserisci</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+          </li>
+          <li class="nav-item">
+            <a href=<?= "cartella.php?id=" . $_SESSION['ID'] ?> class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+              Visualizza la cartella
+              </p>
+            </a>
+          </li>
+        <?php endif ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

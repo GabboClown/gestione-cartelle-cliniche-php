@@ -2,8 +2,8 @@
   include_once "backend/database/connection.php";
   session_start();
 
-  if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-      header("Location: login.html");
+  if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true || $_SESSION['isAdmin'] !== true) {
+      header("Location: login.php");
       exit;
   }
   $mode = htmlspecialchars($_GET["admin"]);
@@ -83,66 +83,85 @@
       <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-header">Gestionale</li>
-        <li class="nav-item">
-          <a href="dashboard.php" class="nav-link">
-            <i class="nav-icon fas fa-chart-bar"></i>
-            <p>
-            Statistiche
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fa fa-users"></i>
+        <?php if($_SESSION['isAdmin'] == true) :?>
+          <li class="nav-item">
+            <a href="dashboard.php" class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
               <p>
-              Pazienti
-              <i class="fas fa-angle-left right"></i>
+              Statistiche
               </p>
             </a>
-          <ul class="nav nav-treeview" style="display: none;">
-            <li class="nav-item">
-              <a href="showdata.php?admin=false" class="nav-link">
-                <i class="fa fa-user-circle nav-icon"></i>
-                <p>Mostra</p>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-users"></i>
+                <p>
+                Pazienti
+                <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
-            </li>
-            <li class="nav-item">
-              <a href="insertnew.php?admin=false" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Inserisci</p>
+            <ul class="nav nav-treeview" style="display: none;">
+              <li class="nav-item">
+                <a href="showdata.php?admin=false" class="nav-link">
+                  <i class="fa fa-user-circle nav-icon"></i>
+                  <p>Mostra</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="insertnew.php?admin=false" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Inserisci</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="newdiagnosis.php" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Aggiungi Diagnosi</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-lock"></i>
+                <p>
+                Amministratori
+                <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
-            </li>
-            <li class="nav-item">
-              <a href="newdiagnosis.php" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Aggiungi Diagnosi</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fa fa-lock"></i>
+            <ul class="nav nav-treeview" style="display: none;">
+              <li class="nav-item">
+                <a href="showdata.php?admin=true" class="nav-link">
+                  <i class="fa fa-user-circle nav-icon"></i>
+                  <p>Mostra</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="insertnew.php?admin=true" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Inserisci</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        <?php else :?>
+          <li class="nav-item">
+            <a href=<?= "modify.php?id=" . $_SESSION['ID'] ."&admin=false" ?> class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
               <p>
-              Amministratori
-              <i class="fas fa-angle-left right"></i>
+              Modifica il tuo profilo
               </p>
             </a>
-          <ul class="nav nav-treeview" style="display: none;">
-            <li class="nav-item">
-              <a href="showdata.php?admin=true" class="nav-link">
-                <i class="fa fa-user-circle nav-icon"></i>
-                <p>Mostra</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="insertnew.php?admin=true" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Inserisci</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+          </li>
+          <li class="nav-item">
+            <a href=<?= "cartella.php?id=" . $_SESSION['ID'] ?> class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+              Visualizza la cartella
+              </p>
+            </a>
+          </li>
+        <?php endif ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -230,6 +249,7 @@
                     }
                     else{
                         echo   "<th>ID</th>
+                                <th>Email</th>
                                 <th>Codice Fiscale</th>
                                 <th>Nome</th>
                                 <th>Cognome</th>
@@ -252,14 +272,14 @@
                         if($filtro) {
                           switch ($filtro) {
                             case 'maggiorenni':
-                                $result = $conn->query("SELECT * FROM Pazienti WHERE Data_Nascita <= date('now', '-18 years')");
+                                $result = $conn->query("SELECT ID, Email, Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso FROM Pazienti WHERE Data_Nascita <= date('now', '-18 years')");
                                 break;
                             case 'over65':
-                                $result = $conn->query("SELECT * FROM Pazienti WHERE Data_Nascita <= date('now', '-65 years')");
+                                $result = $conn->query("SELECT ID, Email, Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso FROM Pazienti WHERE Data_Nascita <= date('now', '-65 years')");
                                 break;
                             case 'ospedale':
                                 if ($ospedale !== '') {
-                                  $stmt = $conn->prepare("SELECT p.* FROM Pazienti p
+                                  $stmt = $conn->prepare("SELECT p.ID, p.Email, p.Cod_fiscale, p.Nome, p.Cognome, p.Data_Nascita, p.Sesso FROM Pazienti p
                                                           JOIN Diagnosi d ON p.ID = d.ID_Paziente
                                                           JOIN Ospedali o ON o.ID = d.ID_Ospedale
                                                           WHERE o.Nome = :nome");
@@ -272,7 +292,7 @@
                                 break;
                             }
                         } else {
-                          $result = $conn->query("SELECT * FROM Pazienti");
+                          $result = $conn->query("SELECT ID, Email, Cod_fiscale, Nome, Cognome, Data_Nascita, Sesso FROM Pazienti");
                         }
                       }
                     
@@ -326,6 +346,7 @@
                     }
                     else{
                         echo   "<th>ID</th>
+                                <th>Email</th>
                                 <th>Codice Fiscale</th>
                                 <th>Nome</th>
                                 <th>Cognome</th>

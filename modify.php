@@ -3,8 +3,14 @@
   session_start();
 
   if (!isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] !== true) {
-      header("Location: login.html");
-      exit;
+    header("Location: login.php");
+    exit;
+  }
+  
+  $id = htmlspecialchars($_GET["id"]);
+  if ($id != $_SESSION["ID"] && $_SESSION["isAdmin"] !== true) {
+    header("Location: login.php");
+    exit;
   }
   $mode = htmlspecialchars($_GET["admin"]);
   if($mode != 'true' && $mode != 'false') header("Location: dashboard.php");
@@ -15,7 +21,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gestione Cartelle Cliniche | Modifica <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "cittadino" ?></title>
+  <title>Gestione Cartelle Cliniche | Modifica <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "paziente" ?></title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -65,66 +71,85 @@
       <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-header">Gestionale</li>
-        <li class="nav-item">
-          <a href="dashboard.php" class="nav-link">
-            <i class="nav-icon fas fa-chart-bar"></i>
-            <p>
-            Statistiche
-            </p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fa fa-users"></i>
+        <?php if($_SESSION['isAdmin'] == true) :?>
+          <li class="nav-item">
+            <a href="dashboard.php" class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
               <p>
-              Pazienti
-              <i class="fas fa-angle-left right"></i>
+              Statistiche
               </p>
             </a>
-          <ul class="nav nav-treeview" style="display: none;">
-            <li class="nav-item">
-              <a href="showdata.php?admin=false" class="nav-link">
-                <i class="fa fa-user-circle nav-icon"></i>
-                <p>Mostra</p>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-users"></i>
+                <p>
+                Pazienti
+                <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
-            </li>
-            <li class="nav-item">
-              <a href="insertnew.php?admin=false" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Inserisci</p>
+            <ul class="nav nav-treeview" style="display: none;">
+              <li class="nav-item">
+                <a href="showdata.php?admin=false" class="nav-link">
+                  <i class="fa fa-user-circle nav-icon"></i>
+                  <p>Mostra</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="insertnew.php?admin=false" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Inserisci</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="newdiagnosis.php" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Aggiungi Diagnosi</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-lock"></i>
+                <p>
+                Amministratori
+                <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
-            </li>
-            <li class="nav-item">
-              <a href="newdiagnosis.php" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Aggiungi Diagnosi</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="nav-icon fa fa-lock"></i>
+            <ul class="nav nav-treeview" style="display: none;">
+              <li class="nav-item">
+                <a href="showdata.php?admin=true" class="nav-link">
+                  <i class="fa fa-user-circle nav-icon"></i>
+                  <p>Mostra</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="insertnew.php?admin=true" class="nav-link">
+                  <i class="fa fa-user-plus nav-icon"></i>
+                  <p>Inserisci</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        <?php else :?>
+          <li class="nav-item">
+            <a href=<?= "modify.php?id=" . $_SESSION['ID'] ."&admin=false" ?> class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
               <p>
-              Amministratori
-              <i class="fas fa-angle-left right"></i>
+              Modifica il tuo profilo
               </p>
             </a>
-          <ul class="nav nav-treeview" style="display: none;">
-            <li class="nav-item">
-              <a href="showdata.php?admin=true" class="nav-link">
-                <i class="fa fa-user-circle nav-icon"></i>
-                <p>Mostra</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="insertnew.php?admin=true" class="nav-link">
-                <i class="fa fa-user-plus nav-icon"></i>
-                <p>Inserisci</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+          </li>
+          <li class="nav-item">
+            <a href=<?= "cartella.php?id=" . $_SESSION['ID'] ?> class="nav-link">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+              Visualizza la cartella
+              </p>
+            </a>
+          </li>
+        <?php endif ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -139,12 +164,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Modifica i dati di un <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "paziente" ?></h1>
+            <h1>Modifica i dati di un <?php echo htmlspecialchars($_GET["admin"]) == "true" && $_SESSION['isAdmin'] == true ? "admin" : "paziente" ?></h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="dashboard.php">Home</a></li>
-              <li class="breadcrumb-item active">Modifica i dati di un <?php echo htmlspecialchars($_GET["admin"]) == "true" ? "admin" : "paziente" ?></li>
+              <li class="breadcrumb-item active">Modifica i dati di un <?php echo htmlspecialchars($_GET["admin"]) == "true" && $_SESSION['isAdmin'] == true ? "admin" : "paziente" ?></li>
             </ol>
           </div>
         </div>
@@ -164,13 +189,13 @@
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form action="backend/alter.php?admin=<?php echo htmlspecialchars($_GET["admin"]) ?>&id=<?php echo htmlspecialchars($_GET["id"]) ?>" method="post">
+              <form action="backend/alter.php?admin=<?php echo htmlspecialchars($_GET["admin"]) ?>&id=<?php echo $id ?>" method="post">
                 <div class="card-body">
                   <?php
                     $id = (int) $_GET["id"];
                     $mode = htmlspecialchars($_GET["admin"]);
 
-                    if ($mode == "true") {
+                    if ($mode == "true" && $_SESSION['isAdmin'] !== true) {
                       $template = $conn->prepare("SELECT * FROM Amministratori WHERE ID = :id");
                       $template->bindValue(':id', $id, SQLITE3_INTEGER);
                       $result = $template->execute();
@@ -248,6 +273,24 @@
                             </span>
                           </div>
                           <input type="date" class="form-control" name="Data_Nascita" placeholder="Data di Nascita" value="' . htmlspecialchars($row["Data_Nascita"]) . '">
+                        </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fa fa-address-book"></i>
+                            </span>
+                          </div>
+                          <input type="email" class="form-control" name="Email" placeholder="Email" value="' . htmlspecialchars($row["Email"]) . '">
+                        </div>
+
+                        <div class="input-group mb-3">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text">
+                              <i class="fa fa-address-book"></i>
+                            </span>
+                          </div>
+                          <input type="password" class="form-control" name="Password" placeholder="Password" value="' . htmlspecialchars($row["Password"]) . '">
                         </div>
 
                         <div class="input-group mb-3">

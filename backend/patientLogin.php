@@ -4,7 +4,7 @@
 
     function login($conn, $email, $pwd) {
         $pwd = hash("sha256", $pwd);
-        $stmt = $conn->prepare("SELECT ID FROM Amministratori WHERE Email = :email AND Password = :password");
+        $stmt = $conn->prepare("SELECT ID FROM Pazienti WHERE Email = :email AND Password = :password");
         $stmt->bindValue(':email', $email, SQLITE3_TEXT);
         $stmt->bindValue(':password', $pwd, SQLITE3_TEXT);
         $result = $stmt->execute();
@@ -23,10 +23,11 @@
         
         if($ID != -1) {
             $_SESSION['isLoggedIn'] = true;
+            $_SESSION['isAdmin'] = false;
             $_SESSION['ID'] = $ID;
-            header("Location: ../dashboard.php");
+            header("Location: ../cartella.php?id=$ID");
         } else {
-            header("Location: ../login.html?error=1");
+            header("Location: ../login.php?error=1");
         }
         $conn->close();
     }

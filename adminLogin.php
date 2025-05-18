@@ -1,3 +1,17 @@
+<?php
+  include_once "backend/database/connection.php";
+  session_start();
+
+  if (isset($_SESSION['isLoggedIn']) || $_SESSION['isLoggedIn'] == true) {
+    if($_SESSION['isAdmin'] == true) {
+      header("Location: dashboard.php");
+      exit;
+    } else {
+      header("Location: cartella.php?id=".$_SESSION["ID"]);
+      exit;
+    }
+  }
+?>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -27,7 +41,7 @@
     <div class="card-body login-card-body">
       <p class="login-box-msg">Autenticati per accedere al terminale</p>
 
-      <form action="backend/check_login.php" method="post">
+      <form action="backend/adminLogin.php" method="post">
         <div class="input-group mb-3">
           <input type="text" class="form-control" name="email" placeholder="Email">
           <div class="input-group-append">
@@ -51,6 +65,8 @@
           <!-- /.col -->
         </div>
       </form>
+
+      <span style="display: flex; justify-content: center;">Sei un paziente? Accedi <a href="login.php" style="margin-left: 3px;">qui</a></span>
     </div>
     <!-- /.login-card-body -->
   </div>
