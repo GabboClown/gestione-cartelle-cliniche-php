@@ -6,6 +6,7 @@
     header("Location: login.php");
     exit;
   }
+  $fisc = htmlspecialchars($_GET["fiscale"]) ?? "";
 ?>
 
 <!DOCTYPE html>
@@ -173,7 +174,7 @@
                                 <i class="fa fa-id-card"></i>
                             </span>
                             </div>
-                            <input type="text" class="form-control" name="Cod_fiscale" required placeholder="Codice Fiscale Paziente">
+                            <input type="text" class="form-control" name="Cod_fiscale" required placeholder="Codice Fiscale Paziente" value="<?= $fisc ?>">
                         </div>
 
                         <div class="input-group mb-3">

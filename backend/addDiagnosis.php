@@ -18,8 +18,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $dataDiagnosi = sanitize($_POST['Data'] ?? date("Y-m-d", time()));
     $quesiti = $_POST['Quesiti'] ?? [];
 
-    if (!$codFiscale || !$ospedaleNome || !$ospedaleIndirizzo || !$dataDiagnosi || count($quesiti) === 0) {
+    if (!$codFiscale || !$ospedaleNome || !$ospedaleIndirizzo || count($quesiti) === 0 ) {
         die("Errore: dati mancanti.");
+    }
+
+    if(time() > strtotime($dataDiagnosi)) {
+        die("La data non è supportata");
     }
 
     // Rimuovo quesiti vuoti

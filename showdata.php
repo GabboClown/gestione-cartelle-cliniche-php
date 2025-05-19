@@ -257,6 +257,7 @@
                                 <th>Sesso</th>
                                 <th></th>
                                 <th></th>
+                                <th></th>
                                 <th></th>";
                     }
                     ?>
@@ -282,7 +283,7 @@
                                   $stmt = $conn->prepare("SELECT p.ID, p.Email, p.Cod_fiscale, p.Nome, p.Cognome, p.Data_Nascita, p.Sesso FROM Pazienti p
                                                           JOIN Diagnosi d ON p.ID = d.ID_Paziente
                                                           JOIN Ospedali o ON o.ID = d.ID_Ospedale
-                                                          WHERE o.Nome = :nome");
+                                                          WHERE o.Nome LIKE CONCAT('%', :nome, '%')");
                                   $stmt->bindValue(':nome', $ospedale, SQLITE3_TEXT);
                                   $result = $stmt->execute();
                                 }
@@ -319,9 +320,16 @@
                                 </td>";
 
                           if(!$isAdmin) {
+                            $fisc = $row["Cod_fiscale"];
                             echo "<td class=\"action\">
                                   <a class=\"nav-link\" href=\"cartella.php?id=$id\" role=\"button\">
                                     <i class=\"fas fa-eye\"></i>
+                                  </a>
+                                </td>";
+
+                            echo "<td class=\"action\">
+                                  <a class=\"nav-link\" href=\"newdiagnosis.php?fiscale=$fisc\" role=\"button\">
+                                    <i class=\"fa fa-notes-medical\"></i>
                                   </a>
                                 </td>";
                           }
@@ -352,6 +360,7 @@
                                 <th>Cognome</th>
                                 <th>Data di Nascita</th>
                                 <th>Sesso</th>
+                                <th></th>
                                 <th></th>
                                 <th></th>
                                 <th></th>";
