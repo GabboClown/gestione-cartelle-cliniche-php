@@ -114,11 +114,11 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="newdiagnosis.php" class="nav-link">
-                  <i class="fa fa-user-plus nav-icon"></i>
-                  <p>Aggiungi Diagnosi</p>
-                </a>
-              </li>
+                        <a href="newdiagnosis.php" class="nav-link">
+                            <i class="fa fa-notes-medical nav-icon"></i>
+                            <p>Aggiungi Diagnosi</p>
+                        </a>
+                        </li>
             </ul>
           </li>
           <li class="nav-item">

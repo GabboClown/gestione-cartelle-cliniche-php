@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $codFiscale = strtoupper(sanitize($_POST['Cod_fiscale'] ?? ''));
     $ospedaleNome = sanitize($_POST['Ospedale'] ?? '');
     $ospedaleIndirizzo = sanitize($_POST['Indirizzo'] ?? '');
-    $dataDiagnosi = sanitize($_POST['Data'] ?? '');
+    $dataDiagnosi = sanitize($_POST['Data'] ?? date("Y-m-d", time()));
     $quesiti = $_POST['Quesiti'] ?? [];
 
     if (!$codFiscale || !$ospedaleNome || !$ospedaleIndirizzo || !$dataDiagnosi || count($quesiti) === 0) {

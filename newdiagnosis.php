@@ -200,7 +200,7 @@
                                 <i class="fa fa-calendar"></i>
                             </span>
                             </div>
-                            <input type="date" class="form-control" name="Data" required placeholder="Data Diagnosi">
+                            <input type="date" class="form-control" name="Data" placeholder="Data Diagnosi">
                         </div>
                         
                         <div x-data="{ quesiti: [''] }">
